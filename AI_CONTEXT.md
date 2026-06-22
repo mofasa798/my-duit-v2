@@ -22,7 +22,7 @@ Every phase should end with:
 
 ---
 
-# Phase 1 — Project Initialization & Foundation
+# Phase 1 — Project Initialization & Foundation (Completed)
 
 Goal:
 
@@ -32,34 +32,34 @@ Tasks:
 
 Backend:
 
-- Create Laravel project
-- Configure SQLite database
-- Configure environment variables
-- Install Laravel Breeze
-- Configure authentication
+- [x] Create Laravel project
+- [x] Configure SQLite database
+- [x] Configure environment variables
+- [x] Install Laravel Breeze
+- [x] Configure authentication
 
 Frontend:
 
-- Install Vue 3
-- Configure Inertia.js
-- Install TailwindCSS
-- Install PrimeVue
-- Install Pinia
-- Install TypeScript
+- [x] Install Vue 3
+- [x] Configure Inertia.js
+- [x] Install TailwindCSS
+- [x] Install PrimeVue
+- [x] Install Pinia
+- [x] Install TypeScript
 
 Setup:
 
-- Configure aliases
-- Configure linting
-- Configure formatting
-- Configure folder structure
+- [x] Configure aliases
+- [x] Configure linting
+- [x] Configure formatting
+- [x] Configure folder structure
 
 Deliverables:
 
-- Login page
-- Register page
-- Authentication working
-- Clean project structure
+- [x] Login page
+- [x] Register page
+- [x] Authentication working
+- [x] Clean project structure
 
 Portfolio milestone:
 
