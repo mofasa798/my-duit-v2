@@ -152,7 +152,7 @@ Core business logic working
 
 ---
 
-# Phase 4 — Home Dashboard (Excel-like Interface)
+# Phase 4 — Home Dashboard (Excel-like Interface) (Completed)
 
 Goal:
 
@@ -162,27 +162,26 @@ Tasks:
 
 Install:
 
-- AG Grid Community
+- [x] AG Grid Community
 
 Create:
 
-TransactionTable.vue
-
-QuickTransactionForm.vue
+- [x] TransactionTable.vue
+- [x] QuickTransactionForm.vue
 
 Features:
 
-- inline edit
-- sorting
-- filtering
-- pagination
-- keyboard navigation
-- search
-- responsive layout
+- [x] inline edit
+- [x] sorting
+- [x] filtering
+- [x] pagination
+- [x] keyboard navigation
+- [x] search
+- [x] responsive layout
 
 Deliverables:
 
-- Excel-like transaction page
+- [x] Excel-like transaction page
 
 Portfolio milestone:
 

@@ -27,7 +27,7 @@ class DashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $categories = Category::where(function ($q) use ($user) {
+        $categories = Category::query()->where(function ($q) use ($user) {
             $q->where('user_id', $user->id)
               ->orWhereNull('user_id');
         })->orderBy('type')->orderBy('name')->get();
