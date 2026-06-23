@@ -67,7 +67,7 @@ Basic application structure ready
 
 ---
 
-# Phase 2 — Database Design & Models
+# Phase 2 — Database Design & Models (Completed)
 
 Goal:
 
@@ -77,35 +77,35 @@ Tasks:
 
 Create migrations:
 
-- users
-- categories
-- transactions
-- reports
+- [x] users
+- [x] categories
+- [x] transactions
+- [x] reports
 
 Create models:
 
-- User
-- Category
-- Transaction
-- Report
+- [x] User
+- [x] Category
+- [x] Transaction
+- [x] Report
 
 Create:
 
-- relationships
-- factories
-- seeders
+- [x] relationships
+- [x] factories
+- [x] seeders
 
 Seed sample data:
 
-- income categories
-- expense categories
-- dummy transactions
+- [x] income categories
+- [x] expense categories
+- [x] dummy transactions
 
 Deliverables:
 
-- Database schema completed
-- Seeder working
-- Relationship working
+- [x] Database schema completed
+- [x] Seeder working
+- [x] Relationship working
 
 Portfolio milestone:
 
