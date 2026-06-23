@@ -113,7 +113,7 @@ Complete data structure
 
 ---
 
-# Phase 3 — Transaction CRUD System
+# Phase 3 — Transaction CRUD System (Completed)
 
 Goal:
 
@@ -123,28 +123,28 @@ Tasks:
 
 Create:
 
-- TransactionController
-- TransactionService
-- Form Requests
+- [x] TransactionController
+- [x] TransactionService
+- [x] Form Requests
 
 Functions:
 
-- create transaction
-- edit transaction
-- delete transaction
-- list transactions
-- search transaction
-- filter transaction
+- [x] create transaction
+- [x] edit transaction
+- [x] delete transaction
+- [x] list transactions
+- [x] search transaction
+- [x] filter transaction
 
 Validation:
 
-- amount required
-- category required
-- transaction date required
+- [x] amount required
+- [x] category required
+- [x] transaction date required
 
 Deliverables:
 
-- Complete CRUD
+- [x] Complete CRUD
 
 Portfolio milestone:
 
