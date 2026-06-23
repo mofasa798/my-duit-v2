@@ -83,6 +83,6 @@ class TransactionService
      */
     public function delete(Transaction $transaction): void
     {
-        $transaction->delete();
+        Transaction::destroy($transaction->getKey());
     }
 }
