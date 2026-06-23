@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\AnalyticsController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -32,6 +33,8 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('transactions', TransactionController::class)
         ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+        
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
 });
 
 require __DIR__.'/auth.php';

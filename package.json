@@ -35,7 +35,9 @@
         "@primevue/themes": "^4.5.4",
         "ag-grid-community": "^35.3.1",
         "ag-grid-vue3": "^35.3.1",
+        "apexcharts": "^5.15.2",
         "pinia": "^3.0.4",
-        "primevue": "^4.5.5"
+        "primevue": "^4.5.5",
+        "vue3-apexcharts": "^1.11.1"
     }
 }

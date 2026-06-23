@@ -189,7 +189,7 @@ Main interaction experience completed
 
 ---
 
-# Phase 5 — Spending Analytics
+# Phase 5 — Spending Analytics (Completed)
 
 Goal:
 
@@ -199,29 +199,29 @@ Tasks:
 
 Install:
 
-- ApexCharts
+- [x] ApexCharts
 
 Create:
 
-SpendingChart.vue
+- [x] SpendingChart.vue
 
 Features:
 
-- income summary
-- expense summary
-- category breakdown
-- date filtering
-- percentage calculation
+- [x] income summary
+- [x] expense summary
+- [x] category breakdown
+- [x] date filtering
+- [x] percentage calculation
 
 Charts:
 
-- Pie chart
-- Bar chart
-- Line chart
+- [x] Pie chart
+- [x] Bar chart
+- [x] Line chart
 
 Deliverables:
 
-- Analytics page
+- [x] Analytics page
 
 Portfolio milestone:
 
