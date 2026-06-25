@@ -35,6 +35,9 @@ Route::middleware('auth')->group(function () {
         ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
         
     Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+
+    Route::resource('reports', App\Http\Controllers\ReportController::class)
+        ->only(['index', 'store', 'destroy']);
 });
 
 require __DIR__.'/auth.php';
