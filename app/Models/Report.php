@@ -3,10 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Report extends Model
 {
+    /**
+     * Mass assignable attributes.
+     */
     protected $fillable = ['user_id', 'start_date', 'end_date', 'total_income', 'total_expense', 'balance'];
+
+    /**
+     * The user that owns the report.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     protected function casts(): array
     {
@@ -17,10 +29,5 @@ class Report extends Model
             'total_expense' => 'decimal:2',
             'balance' => 'decimal:2',
         ];
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
     }
 }

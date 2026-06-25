@@ -229,7 +229,7 @@ Data visualization implemented
 
 ---
 
-# Phase 6 — Reporting System
+# Phase 6 — Reporting System (Completed)
 
 Goal:
 
