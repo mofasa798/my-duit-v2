@@ -37,6 +37,10 @@ const deleteReport = (id: number) => {
 const formatCurrency = (value: string | number) => {
     return 'Rp ' + Number(value).toLocaleString('id-ID');
 };
+
+const printReport = () => {
+    window.print();
+};
 </script>
 
 <template>
@@ -53,7 +57,7 @@ const formatCurrency = (value: string | number) => {
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 space-y-6">
                 
                 <!-- Generate Report Form -->
-                <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8 print:hidden">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Generate New Report</h3>
                     <form @submit.prevent="generateReport" class="flex items-end space-x-4">
                         <div>
@@ -87,8 +91,8 @@ const formatCurrency = (value: string | number) => {
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Income</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Expense</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Balance</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Generated On</th>
-                                    <th scope="col" class="relative px-6 py-3">
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider print:hidden">Generated On</th>
+                                    <th scope="col" class="relative px-6 py-3 print:hidden">
                                         <span class="sr-only">Actions</span>
                                     </th>
                                 </tr>
@@ -107,10 +111,14 @@ const formatCurrency = (value: string | number) => {
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium" :class="Number(report.balance) >= 0 ? 'text-green-600' : 'text-red-600'">
                                         {{ formatCurrency(report.balance) }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 print:hidden">
                                         {{ new Date(report.created_at).toLocaleDateString() }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2 print:hidden">
+                                        <a :href="route('reports.export', { report: report.id, format: 'xlsx' })" class="text-indigo-600 hover:text-indigo-900">XLSX</a>
+                                        <a :href="route('reports.export', { report: report.id, format: 'csv' })" class="text-indigo-600 hover:text-indigo-900">CSV</a>
+                                        <a :href="route('reports.export', { report: report.id, format: 'pdf' })" target="_blank" class="text-indigo-600 hover:text-indigo-900">PDF</a>
+                                        <button @click="printReport" class="text-gray-600 hover:text-gray-900">Print</button>
                                         <button @click="deleteReport(report.id)" class="text-red-600 hover:text-red-900">Delete</button>
                                     </td>
                                 </tr>
