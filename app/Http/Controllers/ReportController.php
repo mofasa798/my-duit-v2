@@ -8,8 +8,10 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
+use Maatwebsite\Excel\Excel;
 
 class ReportController extends Controller
+
 {
     protected ReportService $reportService;
 
@@ -80,7 +82,8 @@ class ReportController extends Controller
             case 'xlsx':
                 return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ReportExport($report), $fileName . '.xlsx');
             case 'csv':
-                return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ReportExport($report), $fileName . '.csv', \Maatwebsite\Excel\Excel::CSV);
+                                return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ReportExport($report), $fileName . '.csv', Excel::CSV);
+
             case 'pdf':
                 $transactions = \App\Models\Transaction::with('category')
                     ->where('user_id', $report->user_id)
