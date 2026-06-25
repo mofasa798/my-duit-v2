@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
         
     Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
 
+    Route::get('/reports/{report}/export/{format}', [App\Http\Controllers\ReportController::class, 'export'])->name('reports.export');
     Route::resource('reports', App\Http\Controllers\ReportController::class)
         ->only(['index', 'store', 'destroy']);
 });

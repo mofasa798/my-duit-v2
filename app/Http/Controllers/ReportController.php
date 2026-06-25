@@ -63,4 +63,38 @@ class ReportController extends Controller
 
         return redirect()->back()->with('success', 'Report deleted successfully.');
     }
+
+    /**
+     * Export the report in the specified format.
+     */
+    public function export(Report $report, string $format, Request $request)
+    {
+        // Ensure the user owns the report
+        if ($report->user_id !== $request->user()->id) {
+            abort(403);
+        }
+
+        $fileName = 'Report_' . $report->start_date . '_to_' . $report->end_date;
+
+        switch ($format) {
+            case 'xlsx':
+                return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ReportExport($report), $fileName . '.xlsx');
+            case 'csv':
+                return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ReportExport($report), $fileName . '.csv', \Maatwebsite\Excel\Excel::CSV);
+            case 'pdf':
+                $transactions = \App\Models\Transaction::with('category')
+                    ->where('user_id', $report->user_id)
+                    ->whereBetween('date', [$report->start_date, $report->end_date])
+                    ->orderBy('date', 'asc')
+                    ->get();
+
+                $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.report_pdf', [
+                    'report' => $report,
+                    'transactions' => $transactions
+                ]);
+                return $pdf->download($fileName . '.pdf');
+            default:
+                abort(404);
+        }
+    }
 }

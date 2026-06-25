@@ -263,7 +263,7 @@ Business reporting completed
 
 ---
 
-# Phase 7 — Export & Print Features
+# Phase 7 — Export & Print Features (Completed)
 
 Goal:
 
