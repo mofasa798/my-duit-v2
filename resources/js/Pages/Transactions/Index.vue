@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDialog from '@/Components/ConfirmDialog.vue';
 import EmptyState from '@/Components/EmptyState.vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import type { Category, Transaction } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
-import type { Category, Transaction } from '@/types';
 
 interface PaginationLink {
     url: string | null;
@@ -134,10 +134,11 @@ function formatDate(dateStr: string): string {
 
         <div class="py-8">
             <div class="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
-
                 <!-- Filters -->
                 <div class="rounded-xl bg-white p-4 shadow-sm">
-                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                    <div
+                        class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5"
+                    >
                         <!-- Search -->
                         <input
                             v-model="search"
@@ -188,17 +189,44 @@ function formatDate(dateStr: string): string {
                 </div>
 
                 <!-- Table or Empty State -->
-                <div v-if="transactions.data.length > 0" class="overflow-hidden rounded-xl bg-white shadow-sm">
+                <div
+                    v-if="transactions.data.length > 0"
+                    class="overflow-hidden rounded-xl bg-white shadow-sm"
+                >
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Date</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Description</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Category</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Type</th>
-                                    <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Amount</th>
-                                    <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Actions</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                                    >
+                                        Date
+                                    </th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                                    >
+                                        Description
+                                    </th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                                    >
+                                        Category
+                                    </th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                                    >
+                                        Type
+                                    </th>
+                                    <th
+                                        class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
+                                    >
+                                        Amount
+                                    </th>
+                                    <th
+                                        class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
+                                    >
+                                        Actions
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white">
@@ -207,7 +235,9 @@ function formatDate(dateStr: string): string {
                                     :key="tx.id"
                                     class="transition hover:bg-gray-50"
                                 >
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
+                                    <td
+                                        class="whitespace-nowrap px-6 py-4 text-sm text-gray-600"
+                                    >
                                         {{ formatDate(tx.date) }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-900">
@@ -218,23 +248,39 @@ function formatDate(dateStr: string): string {
                                     </td>
                                     <td class="px-6 py-4 text-sm">
                                         <span
-                                            :class="tx.category?.type === 'income'
-                                                ? 'bg-green-100 text-green-700'
-                                                : 'bg-red-100 text-red-700'"
+                                            :class="
+                                                tx.category?.type === 'income'
+                                                    ? 'bg-green-100 text-green-700'
+                                                    : 'bg-red-100 text-red-700'
+                                            "
                                             class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize"
                                         >
                                             {{ tx.category?.type ?? '—' }}
                                         </span>
                                     </td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-right text-sm font-semibold"
-                                        :class="tx.category?.type === 'income' ? 'text-green-600' : 'text-red-600'"
+                                    <td
+                                        class="whitespace-nowrap px-6 py-4 text-right text-sm font-semibold"
+                                        :class="
+                                            tx.category?.type === 'income'
+                                                ? 'text-green-600'
+                                                : 'text-red-600'
+                                        "
                                     >
                                         {{ formatCurrency(tx.amount) }}
                                     </td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-right text-sm">
-                                        <div class="flex items-center justify-end gap-3">
+                                    <td
+                                        class="whitespace-nowrap px-6 py-4 text-right text-sm"
+                                    >
+                                        <div
+                                            class="flex items-center justify-end gap-3"
+                                        >
                                             <Link
-                                                :href="route('transactions.edit', tx.id)"
+                                                :href="
+                                                    route(
+                                                        'transactions.edit',
+                                                        tx.id,
+                                                    )
+                                                "
                                                 class="font-medium text-indigo-600 transition hover:text-indigo-800"
                                             >
                                                 Edit
@@ -254,20 +300,31 @@ function formatDate(dateStr: string): string {
                     </div>
 
                     <!-- Pagination -->
-                    <div v-if="transactions.last_page > 1" class="flex items-center justify-between border-t border-gray-200 px-6 py-3">
+                    <div
+                        v-if="transactions.last_page > 1"
+                        class="flex items-center justify-between border-t border-gray-200 px-6 py-3"
+                    >
                         <p class="text-sm text-gray-600">
-                            Showing {{ transactions.from }}–{{ transactions.to }} of {{ transactions.total }}
+                            Showing {{ transactions.from }}–{{
+                                transactions.to
+                            }}
+                            of {{ transactions.total }}
                         </p>
                         <div class="flex gap-1">
-                            <template v-for="link in transactions.links" :key="link.label">
+                            <template
+                                v-for="link in transactions.links"
+                                :key="link.label"
+                            >
                                 <Link
                                     v-if="link.url"
                                     :href="link.url"
                                     v-html="link.label"
                                     class="rounded px-3 py-1 text-sm"
-                                    :class="link.active
-                                        ? 'bg-indigo-600 text-white'
-                                        : 'text-gray-600 hover:bg-gray-100'"
+                                    :class="
+                                        link.active
+                                            ? 'bg-indigo-600 text-white'
+                                            : 'text-gray-600 hover:bg-gray-100'
+                                    "
                                     preserve-scroll
                                 />
                                 <span
@@ -289,7 +346,6 @@ function formatDate(dateStr: string): string {
                     action-label="+ Add Transaction"
                     :action-route="route('transactions.create')"
                 />
-
             </div>
         </div>
     </AuthenticatedLayout>

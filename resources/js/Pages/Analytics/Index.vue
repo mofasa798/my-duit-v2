@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import EmptyState from '@/Components/EmptyState.vue';
+import SkeletonLoader from '@/Components/SkeletonLoader.vue';
+import SpendingChart from '@/Components/SpendingChart.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
-import { ref, computed, onMounted } from 'vue';
-import SpendingChart from '@/Components/SpendingChart.vue';
-import SkeletonLoader from '@/Components/SkeletonLoader.vue';
-import EmptyState from '@/Components/EmptyState.vue';
+import { computed, onMounted, ref } from 'vue';
 
 const props = defineProps<{
     summary: { totalIncome: number; totalExpense: number; balance: number };
@@ -17,20 +17,30 @@ const dateFrom = ref(props.filters.date_from);
 const dateTo = ref(props.filters.date_to);
 
 const loading = ref(true);
-onMounted(() => setTimeout(() => { loading.value = false; }, 400));
+onMounted(() =>
+    setTimeout(() => {
+        loading.value = false;
+    }, 400),
+);
 
 const hasData = computed(() => Object.keys(props.categoryBreakdown).length > 0);
 
 const applyFilters = () => {
     loading.value = true;
-    router.get(route('analytics.index'), {
-        date_from: dateFrom.value,
-        date_to: dateTo.value,
-    }, {
-        preserveState: true,
-        replace: true,
-        onFinish: () => { loading.value = false; },
-    });
+    router.get(
+        route('analytics.index'),
+        {
+            date_from: dateFrom.value,
+            date_to: dateTo.value,
+        },
+        {
+            preserveState: true,
+            replace: true,
+            onFinish: () => {
+                loading.value = false;
+            },
+        },
+    );
 };
 </script>
 
@@ -46,11 +56,14 @@ const applyFilters = () => {
 
         <div class="py-8">
             <div class="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
-
                 <!-- Filters -->
-                <div class="flex flex-col gap-4 rounded-xl bg-white p-5 shadow-sm sm:flex-row sm:items-end">
+                <div
+                    class="flex flex-col gap-4 rounded-xl bg-white p-5 shadow-sm sm:flex-row sm:items-end"
+                >
                     <div class="flex-1">
-                        <label class="block text-sm font-medium text-gray-700">Date From</label>
+                        <label class="block text-sm font-medium text-gray-700"
+                            >Date From</label
+                        >
                         <input
                             type="date"
                             v-model="dateFrom"
@@ -58,7 +71,9 @@ const applyFilters = () => {
                         />
                     </div>
                     <div class="flex-1">
-                        <label class="block text-sm font-medium text-gray-700">Date To</label>
+                        <label class="block text-sm font-medium text-gray-700"
+                            >Date To</label
+                        >
                         <input
                             type="date"
                             v-model="dateTo"
@@ -88,30 +103,63 @@ const applyFilters = () => {
                 <template v-else>
                     <!-- Summary Cards -->
                     <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
-                        <div class="overflow-hidden rounded-xl bg-white shadow-sm">
+                        <div
+                            class="overflow-hidden rounded-xl bg-white shadow-sm"
+                        >
                             <div class="p-6">
-                                <div class="text-sm font-medium text-gray-500">Total Income</div>
-                                <div class="mt-2 text-3xl font-bold text-green-600">
-                                    Rp {{ summary.totalIncome.toLocaleString('id-ID') }}
+                                <div class="text-sm font-medium text-gray-500">
+                                    Total Income
+                                </div>
+                                <div
+                                    class="mt-2 text-3xl font-bold text-green-600"
+                                >
+                                    Rp
+                                    {{
+                                        summary.totalIncome.toLocaleString(
+                                            'id-ID',
+                                        )
+                                    }}
                                 </div>
                             </div>
                         </div>
-                        <div class="overflow-hidden rounded-xl bg-white shadow-sm">
+                        <div
+                            class="overflow-hidden rounded-xl bg-white shadow-sm"
+                        >
                             <div class="p-6">
-                                <div class="text-sm font-medium text-gray-500">Total Expense</div>
-                                <div class="mt-2 text-3xl font-bold text-red-600">
-                                    Rp {{ summary.totalExpense.toLocaleString('id-ID') }}
+                                <div class="text-sm font-medium text-gray-500">
+                                    Total Expense
+                                </div>
+                                <div
+                                    class="mt-2 text-3xl font-bold text-red-600"
+                                >
+                                    Rp
+                                    {{
+                                        summary.totalExpense.toLocaleString(
+                                            'id-ID',
+                                        )
+                                    }}
                                 </div>
                             </div>
                         </div>
-                        <div class="overflow-hidden rounded-xl bg-white shadow-sm">
+                        <div
+                            class="overflow-hidden rounded-xl bg-white shadow-sm"
+                        >
                             <div class="p-6">
-                                <div class="text-sm font-medium text-gray-500">Net Balance</div>
+                                <div class="text-sm font-medium text-gray-500">
+                                    Net Balance
+                                </div>
                                 <div
                                     class="mt-2 text-3xl font-bold"
-                                    :class="summary.balance >= 0 ? 'text-green-600' : 'text-red-600'"
+                                    :class="
+                                        summary.balance >= 0
+                                            ? 'text-green-600'
+                                            : 'text-red-600'
+                                    "
                                 >
-                                    Rp {{ summary.balance.toLocaleString('id-ID') }}
+                                    Rp
+                                    {{
+                                        summary.balance.toLocaleString('id-ID')
+                                    }}
                                 </div>
                             </div>
                         </div>
@@ -131,7 +179,6 @@ const applyFilters = () => {
                         description="Tidak ada transaksi dalam rentang tanggal ini. Coba ubah filter tanggal."
                     />
                 </template>
-
             </div>
         </div>
     </AuthenticatedLayout>

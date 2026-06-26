@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue';
 import { usePage } from '@inertiajs/vue3';
+import { ref, watch } from 'vue';
 
 interface Toast {
     id: number;
@@ -41,10 +41,10 @@ export function useToast() {
         toasts.value.push(toast);
 
         setTimeout(() => {
-            const t = toasts.value.find(t => t.id === id);
+            const t = toasts.value.find((t) => t.id === id);
             if (t) t.visible = false;
             setTimeout(() => {
-                toasts.value = toasts.value.filter(t => t.id !== id);
+                toasts.value = toasts.value.filter((t) => t.id !== id);
             }, 400);
         }, duration);
     }
@@ -53,15 +53,22 @@ export function useToast() {
 }
 
 function dismiss(id: number) {
-    const t = toasts.value.find(t => t.id === id);
+    const t = toasts.value.find((t) => t.id === id);
     if (t) t.visible = false;
     setTimeout(() => {
-        toasts.value = toasts.value.filter(t => t.id !== id);
+        toasts.value = toasts.value.filter((t) => t.id !== id);
     }, 400);
 }
 
 // Watch Inertia flash messages
-const page = usePage<{ flash?: { success?: string; error?: string; warning?: string; info?: string } }>();
+const page = usePage<{
+    flash?: {
+        success?: string;
+        error?: string;
+        warning?: string;
+        info?: string;
+    };
+}>();
 const { show } = useToast();
 
 watch(
@@ -73,28 +80,42 @@ watch(
         if (flash.warning) show('warning', flash.warning);
         if (flash.info) show('info', flash.info);
     },
-    { immediate: true, deep: true }
+    { immediate: true, deep: true },
 );
 </script>
 
 <template>
     <Teleport to="body">
-        <div class="pointer-events-none fixed right-4 top-4 z-[9999] flex flex-col gap-3" aria-live="polite">
-            <Transition
-                v-for="toast in toasts"
-                :key="toast.id"
-                name="toast"
-            >
+        <div
+            class="pointer-events-none fixed right-4 top-4 z-[9999] flex flex-col gap-3"
+            aria-live="polite"
+        >
+            <Transition v-for="toast in toasts" :key="toast.id" name="toast">
                 <div
                     v-if="toast.visible"
-                    :class="[bgColors[toast.type], 'pointer-events-auto flex items-start gap-3 rounded-xl border px-4 py-3 shadow-lg']"
+                    :class="[
+                        bgColors[toast.type],
+                        'pointer-events-auto flex items-start gap-3 rounded-xl border px-4 py-3 shadow-lg',
+                    ]"
                     role="alert"
                 >
-                    <span class="text-lg leading-none">{{ icons[toast.type] }}</span>
-                    <p :class="[textColors[toast.type], 'flex-1 text-sm font-medium']">{{ toast.message }}</p>
+                    <span class="text-lg leading-none">{{
+                        icons[toast.type]
+                    }}</span>
+                    <p
+                        :class="[
+                            textColors[toast.type],
+                            'flex-1 text-sm font-medium',
+                        ]"
+                    >
+                        {{ toast.message }}
+                    </p>
                     <button
                         type="button"
-                        :class="[textColors[toast.type], 'ml-2 opacity-60 hover:opacity-100 transition']"
+                        :class="[
+                            textColors[toast.type],
+                            'ml-2 opacity-60 transition hover:opacity-100',
+                        ]"
                         @click="dismiss(toast.id)"
                         aria-label="Dismiss"
                     >

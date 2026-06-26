@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import type { ApexOptions } from 'apexcharts';
 import { computed } from 'vue';
 import VueApexCharts from 'vue3-apexcharts';
-import type { ApexOptions } from 'apexcharts';
 
 const props = defineProps<{
     categoryBreakdown: Record<string, { amount: number; type: string }>;
@@ -12,7 +12,9 @@ const props = defineProps<{
 // Pie Chart (Expense by Category)
 const pieChartOptions = computed<ApexOptions>(() => {
     const categories = Object.keys(props.categoryBreakdown).filter(
-        k => props.categoryBreakdown[k].type === 'expense' && props.categoryBreakdown[k].amount > 0
+        (k) =>
+            props.categoryBreakdown[k].type === 'expense' &&
+            props.categoryBreakdown[k].amount > 0,
     );
     return {
         chart: { type: 'pie' },
@@ -23,8 +25,12 @@ const pieChartOptions = computed<ApexOptions>(() => {
 });
 const pieChartSeries = computed(() => {
     return Object.keys(props.categoryBreakdown)
-        .filter(k => props.categoryBreakdown[k].type === 'expense' && props.categoryBreakdown[k].amount > 0)
-        .map(k => props.categoryBreakdown[k].amount);
+        .filter(
+            (k) =>
+                props.categoryBreakdown[k].type === 'expense' &&
+                props.categoryBreakdown[k].amount > 0,
+        )
+        .map((k) => props.categoryBreakdown[k].amount);
 });
 
 // Bar Chart (Income vs Expense)
@@ -66,9 +72,9 @@ const lineChartSeries = computed(() => [
 
 <template>
     <div class="space-y-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
             <!-- Pie Chart -->
-            <div class="bg-white p-4 rounded-lg shadow border border-gray-100">
+            <div class="rounded-lg border border-gray-100 bg-white p-4 shadow">
                 <VueApexCharts
                     type="pie"
                     height="350"
@@ -76,9 +82,9 @@ const lineChartSeries = computed(() => [
                     :series="pieChartSeries"
                 />
             </div>
-            
+
             <!-- Bar Chart -->
-            <div class="bg-white p-4 rounded-lg shadow border border-gray-100">
+            <div class="rounded-lg border border-gray-100 bg-white p-4 shadow">
                 <VueApexCharts
                     type="bar"
                     height="350"
@@ -87,9 +93,9 @@ const lineChartSeries = computed(() => [
                 />
             </div>
         </div>
-        
+
         <!-- Line Chart -->
-        <div class="bg-white p-4 rounded-lg shadow border border-gray-100">
+        <div class="rounded-lg border border-gray-100 bg-white p-4 shadow">
             <VueApexCharts
                 type="line"
                 height="350"

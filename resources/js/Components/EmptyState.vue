@@ -1,19 +1,24 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 
-withDefaults(defineProps<{
-    icon?: string;
-    title: string;
-    description: string;
-    actionLabel?: string;
-    actionRoute?: string;
-}>(), {
-    icon: '📭',
-});
+withDefaults(
+    defineProps<{
+        icon?: string;
+        title: string;
+        description: string;
+        actionLabel?: string;
+        actionRoute?: string;
+    }>(),
+    {
+        icon: '📭',
+    },
+);
 </script>
 
 <template>
-    <div class="flex flex-col items-center justify-center rounded-xl bg-white py-16 px-6 text-center shadow-sm">
+    <div
+        class="flex flex-col items-center justify-center rounded-xl bg-white px-6 py-16 text-center shadow-sm"
+    >
         <div class="mb-4 text-5xl">{{ icon }}</div>
         <h3 class="mb-2 text-lg font-semibold text-gray-800">{{ title }}</h3>
         <p class="mb-6 max-w-sm text-sm text-gray-500">{{ description }}</p>

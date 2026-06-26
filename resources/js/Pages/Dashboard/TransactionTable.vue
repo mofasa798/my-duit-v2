@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { AgGridVue } from 'ag-grid-vue3';
+import type { Category, Transaction } from '@/types';
 import { router } from '@inertiajs/vue3';
-import type { ColDef, ValueFormatterParams, ValueSetterParams, CellValueChangedEvent, GridReadyEvent } from 'ag-grid-community';
+import type {
+    CellValueChangedEvent,
+    ColDef,
+    GridReadyEvent,
+    ValueFormatterParams,
+} from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
-import type { Category, Transaction } from '@/types';
+import { AgGridVue } from 'ag-grid-vue3';
+import { ref } from 'vue';
 
 const props = defineProps<{
     transactions: Transaction[];
@@ -18,29 +23,33 @@ const gridApi = ref();
 const dateFormatter = (params: ValueFormatterParams) => {
     if (!params.value) return '';
     return new Date(params.value).toLocaleDateString('id-ID', {
-        day: '2-digit', month: 'short', year: 'numeric'
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
     });
 };
 
 const currencyFormatter = (params: ValueFormatterParams) => {
     if (params.value == null) return '';
     return new Intl.NumberFormat('id-ID', {
-        style: 'currency', currency: 'IDR', minimumFractionDigits: 0
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
     }).format(Number(params.value));
 };
 
 const categoryFormatter = (params: ValueFormatterParams) => {
     if (!params.value) return '';
-    const cat = props.categories.find(c => c.id === Number(params.value));
+    const cat = props.categories.find((c) => c.id === Number(params.value));
     return cat ? `${cat.name} (${cat.type})` : '';
 };
 
 const categoryEditorParams = {
-    values: props.categories.map(c => String(c.id)),
+    values: props.categories.map((c) => String(c.id)),
     valueListFormatter: (id: string) => {
-        const cat = props.categories.find(c => c.id === Number(id));
+        const cat = props.categories.find((c) => c.id === Number(id));
         return cat ? `${cat.name} (${cat.type})` : id;
-    }
+    },
 };
 
 const columnDefs = ref<ColDef[]>([
@@ -83,7 +92,7 @@ const columnDefs = ref<ColDef[]>([
         cellEditor: 'agNumberCellEditor',
         type: 'numericColumn',
         width: 150,
-    }
+    },
 ]);
 
 const defaultColDef: ColDef = {
@@ -99,23 +108,30 @@ const onCellValueChanged = (event: CellValueChangedEvent) => {
     if (event.oldValue === event.newValue) return;
 
     const data = event.data;
-    router.patch(route('dashboard.transactions.inline', data.id), {
-        category_id: data.category_id,
-        amount: data.amount,
-        date: data.date,
-        description: data.description,
-    }, {
-        preserveScroll: true,
-        preserveState: true,
-        onSuccess: () => {
-            // Optional: Show success message or rely on page flash props
+    router.patch(
+        route('dashboard.transactions.inline', data.id),
+        {
+            category_id: data.category_id,
+            amount: data.amount,
+            date: data.date,
+            description: data.description,
         },
-        onError: (errors) => {
-            // Revert changes on error
-            alert('Failed to update: ' + Object.values(errors).join(', '));
-            event.node.setDataValue(event.column.getColId(), event.oldValue);
-        }
-    });
+        {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                // Optional: Show success message or rely on page flash props
+            },
+            onError: (errors) => {
+                // Revert changes on error
+                alert('Failed to update: ' + Object.values(errors).join(', '));
+                event.node.setDataValue(
+                    event.column.getColId(),
+                    event.oldValue,
+                );
+            },
+        },
+    );
 };
 </script>
 

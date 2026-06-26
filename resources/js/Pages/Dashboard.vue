@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
-import TransactionTable from './Dashboard/TransactionTable.vue';
-import QuickTransactionForm from './Dashboard/QuickTransactionForm.vue';
-import SkeletonLoader from '@/Components/SkeletonLoader.vue';
 import EmptyState from '@/Components/EmptyState.vue';
+import SkeletonLoader from '@/Components/SkeletonLoader.vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import type { Category, Transaction } from '@/types';
-import { ref, onMounted } from 'vue';
+import { Head } from '@inertiajs/vue3';
+import { onMounted, ref } from 'vue';
+import QuickTransactionForm from './Dashboard/QuickTransactionForm.vue';
+import TransactionTable from './Dashboard/TransactionTable.vue';
 
 const props = defineProps<{
     transactions: Transaction[];
@@ -16,7 +16,9 @@ const props = defineProps<{
 const loading = ref(true);
 onMounted(() => {
     // Simulate brief loading state so skeleton is visible on navigation
-    setTimeout(() => { loading.value = false; }, 400);
+    setTimeout(() => {
+        loading.value = false;
+    }, 400);
 });
 </script>
 
@@ -32,7 +34,6 @@ onMounted(() => {
 
         <div class="py-8">
             <div class="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
-
                 <!-- Skeleton while loading -->
                 <template v-if="loading">
                     <SkeletonLoader type="card" :count="1" />
@@ -44,7 +45,10 @@ onMounted(() => {
                     <QuickTransactionForm :categories="categories" />
 
                     <!-- Transaction Table or Empty State -->
-                    <div v-if="transactions.length > 0" class="overflow-hidden rounded-xl bg-white shadow-sm">
+                    <div
+                        v-if="transactions.length > 0"
+                        class="overflow-hidden rounded-xl bg-white shadow-sm"
+                    >
                         <div class="overflow-x-auto">
                             <TransactionTable
                                 :transactions="transactions"
@@ -59,7 +63,6 @@ onMounted(() => {
                         description="Tambahkan transaksi pertamamu menggunakan form di atas!"
                     />
                 </template>
-
             </div>
         </div>
     </AuthenticatedLayout>
