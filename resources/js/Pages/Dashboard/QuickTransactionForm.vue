@@ -24,7 +24,8 @@ function submit() {
 </script>
 
 <template>
-    <div class="mb-6 rounded-lg bg-white p-4 shadow-sm">
+    <div class="mb-6 rounded-xl bg-white p-5 shadow-sm">
+        <h2 class="mb-4 text-base font-semibold text-gray-700">Tambah Transaksi Cepat</h2>
         <form @submit.prevent="submit" class="flex flex-col gap-4 sm:flex-row sm:items-end">
             <!-- Date -->
             <div class="flex-1">
@@ -101,9 +102,13 @@ function submit() {
                 <button
                     type="submit"
                     :disabled="form.processing"
-                    class="mt-1 w-full whitespace-nowrap rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-60 sm:w-auto"
+                    class="mt-1 inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-60 sm:w-auto"
                 >
-                    Add
+                    <svg v-if="form.processing" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                    </svg>
+                    {{ form.processing ? 'Menyimpan...' : 'Tambah' }}
                 </button>
             </div>
         </form>

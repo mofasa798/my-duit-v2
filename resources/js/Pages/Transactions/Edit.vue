@@ -32,15 +32,15 @@ function submit() {
                 >
                     ← Back
                 </Link>
-                <h2 class="text-xl font-semibold leading-tight text-gray-800">
+                <h1 class="text-2xl font-bold leading-tight text-gray-800">
                     Edit Transaction
-                </h2>
+                </h1>
             </div>
         </template>
 
         <div class="py-8">
             <div class="mx-auto max-w-xl px-4 sm:px-6 lg:px-8">
-                <div class="rounded-lg bg-white p-6 shadow-sm">
+                <div class="rounded-xl bg-white p-6 shadow-sm">
                     <form @submit.prevent="submit" class="space-y-5">
 
                         <!-- Category -->
@@ -144,9 +144,13 @@ function submit() {
                             <button
                                 type="submit"
                                 :disabled="form.processing"
-                                class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+                                class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                             >
-                                {{ form.processing ? 'Saving...' : 'Update Transaction' }}
+                                <svg v-if="form.processing" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                                </svg>
+                                {{ form.processing ? 'Menyimpan...' : 'Update Transaction' }}
                             </button>
                         </div>
 
