@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import ConfirmDialog from '@/Components/ConfirmDialog.vue';
+import EmptyState from '@/Components/EmptyState.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import type { Category, Transaction } from '@/types';
@@ -61,10 +63,26 @@ watch(search, () => {
 
 watch([type, categoryId, dateFrom, dateTo], applyFilters);
 
+// ConfirmDialog state
+const confirmOpen = ref(false);
+const pendingDeleteId = ref<number | null>(null);
+
 function confirmDelete(id: number) {
-    if (confirm('Yakin ingin menghapus transaksi ini?')) {
-        router.delete(route('transactions.destroy', id));
+    pendingDeleteId.value = id;
+    confirmOpen.value = true;
+}
+
+function onConfirmDelete() {
+    if (pendingDeleteId.value !== null) {
+        router.delete(route('transactions.destroy', pendingDeleteId.value));
     }
+    confirmOpen.value = false;
+    pendingDeleteId.value = null;
+}
+
+function onCancelDelete() {
+    confirmOpen.value = false;
+    pendingDeleteId.value = null;
 }
 
 function formatCurrency(amount: string | number): string {
@@ -87,15 +105,27 @@ function formatDate(dateStr: string): string {
 <template>
     <Head title="Transactions" />
 
+    <!-- Confirm delete dialog -->
+    <ConfirmDialog
+        :open="confirmOpen"
+        title="Hapus Transaksi"
+        message="Yakin ingin menghapus transaksi ini? Tindakan ini tidak bisa dibatalkan."
+        confirm-label="Ya, Hapus"
+        cancel-label="Batal"
+        type="danger"
+        @confirm="onConfirmDelete"
+        @cancel="onCancelDelete"
+    />
+
     <AuthenticatedLayout>
         <template #header>
             <div class="flex items-center justify-between">
-                <h2 class="text-xl font-semibold leading-tight text-gray-800">
+                <h1 class="text-2xl font-bold leading-tight text-gray-800">
                     Transactions
-                </h2>
+                </h1>
                 <Link
                     :href="route('transactions.create')"
-                    class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    class="inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                     + Add Transaction
                 </Link>
@@ -103,23 +133,23 @@ function formatDate(dateStr: string): string {
         </template>
 
         <div class="py-8">
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
 
                 <!-- Filters -->
-                <div class="mb-6 rounded-lg bg-white p-4 shadow-sm">
-                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+                <div class="rounded-xl bg-white p-4 shadow-sm">
+                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
                         <!-- Search -->
                         <input
                             v-model="search"
                             type="text"
                             placeholder="Search description..."
-                            class="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                            class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                         />
 
                         <!-- Type filter -->
                         <select
                             v-model="type"
-                            class="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                            class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                         >
                             <option value="">All Types</option>
                             <option value="income">Income</option>
@@ -129,7 +159,7 @@ function formatDate(dateStr: string): string {
                         <!-- Category filter -->
                         <select
                             v-model="categoryId"
-                            class="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                            class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                         >
                             <option value="">All Categories</option>
                             <option
@@ -145,20 +175,20 @@ function formatDate(dateStr: string): string {
                         <input
                             v-model="dateFrom"
                             type="date"
-                            class="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                            class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                         />
 
                         <!-- Date To -->
                         <input
                             v-model="dateTo"
                             type="date"
-                            class="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                            class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                         />
                     </div>
                 </div>
 
-                <!-- Table -->
-                <div class="overflow-hidden rounded-lg bg-white shadow-sm">
+                <!-- Table or Empty State -->
+                <div v-if="transactions.data.length > 0" class="overflow-hidden rounded-xl bg-white shadow-sm">
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
@@ -172,15 +202,10 @@ function formatDate(dateStr: string): string {
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white">
-                                <tr v-if="transactions.data.length === 0">
-                                    <td colspan="6" class="px-6 py-12 text-center text-sm text-gray-500">
-                                        No transactions found.
-                                    </td>
-                                </tr>
                                 <tr
                                     v-for="tx in transactions.data"
                                     :key="tx.id"
-                                    class="hover:bg-gray-50"
+                                    class="transition hover:bg-gray-50"
                                 >
                                     <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
                                         {{ formatDate(tx.date) }}
@@ -210,13 +235,13 @@ function formatDate(dateStr: string): string {
                                         <div class="flex items-center justify-end gap-3">
                                             <Link
                                                 :href="route('transactions.edit', tx.id)"
-                                                class="text-indigo-600 hover:text-indigo-800"
+                                                class="font-medium text-indigo-600 transition hover:text-indigo-800"
                                             >
                                                 Edit
                                             </Link>
                                             <button
                                                 type="button"
-                                                class="text-red-600 hover:text-red-800"
+                                                class="font-medium text-red-600 transition hover:text-red-800"
                                                 @click="confirmDelete(tx.id)"
                                             >
                                                 Delete
@@ -254,6 +279,16 @@ function formatDate(dateStr: string): string {
                         </div>
                     </div>
                 </div>
+
+                <!-- Empty state -->
+                <EmptyState
+                    v-else
+                    icon="💰"
+                    title="Belum ada transaksi"
+                    description="Belum ada transaksi yang sesuai filter. Coba ubah filter atau tambahkan transaksi baru."
+                    action-label="+ Add Transaction"
+                    :action-route="route('transactions.create')"
+                />
 
             </div>
         </div>
