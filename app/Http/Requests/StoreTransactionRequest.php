@@ -11,6 +11,15 @@ class StoreTransactionRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+        if ($this->has('description') && $this->description) {
+            $this->merge([
+                'description' => strip_tags($this->description),
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return [

@@ -17,39 +17,55 @@ class AnalyticsController extends Controller
         $dateFrom = $request->input('date_from', Carbon::now()->startOfMonth()->toDateString());
         $dateTo = $request->input('date_to', Carbon::now()->endOfMonth()->toDateString());
 
-        $transactions = Transaction::with('category')
-            ->where('user_id', $user->id)
-            ->whereBetween('date', [$dateFrom, $dateTo])
-            ->get();
+        $totals = Transaction::query()
+            ->join('categories', 'transactions.category_id', '=', 'categories.id')
+            ->where('transactions.user_id', $user->id)
+            ->whereBetween('transactions.date', [$dateFrom, $dateTo])
+            ->selectRaw('categories.type, SUM(transactions.amount) as total')
+            ->groupBy('categories.type')
+            ->pluck('total', 'type');
 
-        $totalIncome = 0;
-        $totalExpense = 0;
-
-        foreach ($transactions as $tx) {
-            if ($tx->category->type === 'income') {
-                $totalIncome += $tx->amount;
-            } else {
-                $totalExpense += $tx->amount;
-            }
-        }
+        $totalIncome = (float) ($totals['income'] ?? 0);
+        $totalExpense = (float) ($totals['expense'] ?? 0);
         $balance = $totalIncome - $totalExpense;
 
-        $categoryBreakdown = $transactions->groupBy(function ($tx) {
-            return $tx->category ? $tx->category->name : 'Uncategorized';
-        })->map(function ($group) {
-            $firstCategory = $group->first()->category;
-            return [
-                'amount' => $group->sum('amount'),
-                'type' => $firstCategory ? $firstCategory->type : 'expense',
-            ];
-        });
+        $categoryBreakdown = Transaction::query()
+            ->join('categories', 'transactions.category_id', '=', 'categories.id')
+            ->where('transactions.user_id', $user->id)
+            ->whereBetween('transactions.date', [$dateFrom, $dateTo])
+            ->selectRaw('categories.name, categories.type, SUM(transactions.amount) as amount')
+            ->groupBy('categories.id', 'categories.name', 'categories.type')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->name => [
+                    'amount' => (float) $item->amount,
+                    'type' => $item->type,
+                ]];
+            });
 
-        $trends = $transactions->groupBy('date')->map(function ($group) {
-            return [
-                'income' => $group->filter(fn($tx) => $tx->category && $tx->category->type === 'income')->sum('amount'),
-                'expense' => $group->filter(fn($tx) => !$tx->category || $tx->category->type === 'expense')->sum('amount'),
-            ];
-        })->sortKeys();
+        $trendsQuery = Transaction::query()
+            ->join('categories', 'transactions.category_id', '=', 'categories.id')
+            ->where('transactions.user_id', $user->id)
+            ->whereBetween('transactions.date', [$dateFrom, $dateTo])
+            ->selectRaw('transactions.date, categories.type, SUM(transactions.amount) as amount')
+            ->groupBy('transactions.date', 'categories.type')
+            ->get();
+
+        $trends = collect();
+        foreach ($trendsQuery as $item) {
+            $date = $item->date instanceof Carbon ? $item->date->toDateString() : (string) $item->date;
+            if (!$trends->has($date)) {
+                $trends->put($date, ['income' => 0, 'expense' => 0]);
+            }
+            $data = $trends->get($date);
+            if ($item->type === 'income') {
+                $data['income'] = (float) $item->amount;
+            } else {
+                $data['expense'] = (float) $item->amount;
+            }
+            $trends->put($date, $data);
+        }
+        $trends = $trends->sortKeys();
 
         return Inertia::render('Analytics/Index', [
             'summary' => [

@@ -7,13 +7,18 @@ use App\Http\Requests\UpdateTransactionRequest;
 use App\Models\Category;
 use App\Models\Transaction;
 use App\Services\TransactionService;
+use App\Services\CategoryService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Gate;
 
 class TransactionController extends Controller
 {
-    public function __construct(private TransactionService $service) {}
+    public function __construct(
+        private TransactionService $service,
+        private CategoryService $categoryService
+    ) {}
 
     /**
      * Display a paginated list of the user's transactions.
@@ -31,10 +36,7 @@ class TransactionController extends Controller
             dateTo:     $filters['date_to'] ?? null,
         );
 
-        $categories = Category::where(function ($q) use ($request) {
-            $q->where('user_id', $request->user()->id)
-              ->orWhereNull('user_id');
-        })->orderBy('type')->orderBy('name')->get();
+        $categories = $this->categoryService->getForUser($request->user());
 
         return Inertia::render('Transactions/Index', [
             'transactions' => $transactions,
@@ -48,10 +50,7 @@ class TransactionController extends Controller
      */
     public function create(Request $request): Response
     {
-        $categories = Category::where(function ($q) use ($request) {
-            $q->where('user_id', $request->user()->id)
-              ->orWhereNull('user_id');
-        })->orderBy('type')->orderBy('name')->get();
+        $categories = $this->categoryService->getForUser($request->user());
 
         return Inertia::render('Transactions/Create', [
             'categories' => $categories,
@@ -74,12 +73,9 @@ class TransactionController extends Controller
      */
     public function edit(Request $request, Transaction $transaction): Response
     {
-        abort_unless($transaction->user_id === $request->user()->id, 403);
+        Gate::authorize('view', $transaction);
 
-        $categories = Category::where(function ($q) use ($request) {
-            $q->where('user_id', $request->user()->id)
-              ->orWhereNull('user_id');
-        })->orderBy('type')->orderBy('name')->get();
+        $categories = $this->categoryService->getForUser($request->user());
 
         return Inertia::render('Transactions/Edit', [
             'transaction' => $transaction->load('category'),
@@ -92,7 +88,7 @@ class TransactionController extends Controller
      */
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
     {
-        abort_unless($transaction->user_id === $request->user()->id, 403);
+        Gate::authorize('update', $transaction);
 
         $this->service->update($transaction, $request->validated());
 
@@ -105,7 +101,7 @@ class TransactionController extends Controller
      */
     public function destroy(Request $request, Transaction $transaction)
     {
-        abort_unless($transaction->user_id === $request->user()->id, 403);
+        Gate::authorize('delete', $transaction);
 
         $this->service->delete($transaction);
 
