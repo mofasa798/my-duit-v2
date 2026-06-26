@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
 use Maatwebsite\Excel\Excel;
+use Illuminate\Support\Facades\Gate;
 
 class ReportController extends Controller
 
@@ -56,10 +57,7 @@ class ReportController extends Controller
      */
     public function destroy(Report $report, Request $request): RedirectResponse
     {
-        // Ensure the user owns the report
-        if ($report->user_id !== $request->user()->id) {
-            abort(403);
-        }
+        Gate::authorize('delete', $report);
 
         $this->reportService->delete($report);
 
@@ -71,10 +69,7 @@ class ReportController extends Controller
      */
     public function export(Report $report, string $format, Request $request)
     {
-        // Ensure the user owns the report
-        if ($report->user_id !== $request->user()->id) {
-            abort(403);
-        }
+        Gate::authorize('view', $report);
 
         $fileName = 'Report_' . $report->start_date . '_to_' . $report->end_date;
 

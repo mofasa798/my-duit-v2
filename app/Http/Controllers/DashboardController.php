@@ -5,13 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Transaction;
 use App\Services\TransactionService;
+use App\Services\CategoryService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Gate;
 
 class DashboardController extends Controller
 {
-    public function __construct(private TransactionService $transactionService) {}
+    public function __construct(
+        private TransactionService $transactionService,
+        private CategoryService $categoryService
+    ) {}
 
     /**
      * Display the dashboard with spreadsheet-like transactions.
@@ -20,17 +25,15 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
-        // Get ALL transactions for the grid (or we could paginate, but let's send all for client-side AG Grid features)
+        // Get limited transactions for the grid to act as eager/lazy loading
         $transactions = Transaction::with('category')
             ->where('user_id', $user->id)
             ->orderBy('date', 'desc')
             ->orderBy('created_at', 'desc')
+            ->limit(100)
             ->get();
 
-        $categories = Category::query()->where(function ($q) use ($user) {
-            $q->where('user_id', $user->id)
-              ->orWhereNull('user_id');
-        })->orderBy('type')->orderBy('name')->get();
+        $categories = $this->categoryService->getForUser($user);
 
         return Inertia::render('Dashboard', [
             'transactions' => $transactions,
@@ -43,7 +46,7 @@ class DashboardController extends Controller
      */
     public function updateInline(Request $request, Transaction $transaction)
     {
-        abort_unless($transaction->user_id === $request->user()->id, 403);
+        Gate::authorize('update', $transaction);
 
         $validated = $request->validate([
             'category_id' => ['required', 'integer', 'exists:categories,id'],
@@ -51,6 +54,10 @@ class DashboardController extends Controller
             'date'        => ['required', 'date'],
             'description' => ['nullable', 'string', 'max:500'],
         ]);
+
+        if (isset($validated['description'])) {
+            $validated['description'] = strip_tags($validated['description']);
+        }
 
         $this->transactionService->update($transaction, $validated);
 

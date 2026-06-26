@@ -357,22 +357,22 @@ Tasks:
 
 Performance:
 
-- eager loading
-- query optimization
-- pagination
-- lazy loading
+- [x] eager loading
+- [x] query optimization
+- [x] pagination
+- [x] lazy loading
 
 Security:
 
-- authorization policy
-- input sanitization
-- validation improvement
+- [x] authorization policy
+- [x] input sanitization
+- [x] validation improvement
 
 Refactoring:
 
-- remove duplicated code
-- improve services
-- improve component reuse
+- [x] remove duplicated code
+- [x] improve services
+- [x] improve component reuse
 
 Deliverables:
 
