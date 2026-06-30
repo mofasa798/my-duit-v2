@@ -1,7 +1,8 @@
 FROM php:8.3-cli
 
+# Add libsqlite3-dev to the installation list
 RUN apt-get update && apt-get install -y \
-    git curl unzip libzip-dev zip nodejs npm
+    git curl unzip libzip-dev zip nodejs npm libsqlite3-dev
 
 RUN docker-php-ext-install pdo pdo_sqlite zip
 
