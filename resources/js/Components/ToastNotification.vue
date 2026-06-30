@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useToast } from '@/composables/useToast';
 import { usePage } from '@inertiajs/vue3';
 import { watch } from 'vue';
-import { useToast } from '@/composables/useToast';
 
 const icons: Record<string, string> = {
     success: '✅',
