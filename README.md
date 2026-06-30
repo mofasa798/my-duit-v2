@@ -1,58 +1,199 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="https://img.shields.io/badge/status-portfolio%20ready-brightgreen" alt="Portfolio Ready">
+  <img src="https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel" alt="Laravel 13">
+  <img src="https://img.shields.io/badge/Vue_3-4FC08D?logo=vue.js" alt="Vue 3">
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Inertia.js-8B5CF6?logo=inertia" alt="Inertia.js">
+  <img src="https://img.shields.io/badge/SQLite-003B57?logo=sqlite" alt="SQLite">
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License">
 </p>
 
-## About Laravel
+# MyDuit — Personal Finance Tracker 💰
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**MyDuit** is a full-stack personal finance tracking application built with **Laravel 13**, **Vue 3**, and **Inertia.js**. It helps users manage their income and expenses through an intuitive dashboard, detailed analytics, and exportable financial reports.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+> "Duit" is Indonesian slang for "money" — manage your money, your way.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## ✨ Features
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+| Feature | Description |
+|---------|-------------|
+| 📊 **Dashboard** | AG Grid spreadsheet with inline editing, quick transaction form |
+| 💳 **Transactions** | Full CRUD with search, type/category/date filtering, pagination |
+| 📈 **Analytics** | Interactive pie, bar, and line charts (ApexCharts) with date range filters |
+| 📋 **Reports** | Generate period-based reports, export to **XLSX / CSV / PDF**, or print |
+| 🔐 **Authentication** | Laravel Breeze (login, register, password reset, email verification) |
+| 📱 **Responsive** | Mobile-friendly layout with PrimeVue + Tailwind CSS |
+| ⚡ **SPA Experience** | Inertia.js drives fast page transitions without full reloads |
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## 🛠️ Tech Stack
 
-## Agentic Development
+### Backend
+| Technology | Purpose |
+|------------|---------|
+| **Laravel 13** | PHP web framework |
+| **SQLite** | Lightweight, file-based database |
+| **Laravel Breeze** | Authentication scaffolding |
+| **Laravel Sanctum** | API token management |
+| **maatwebsite/Laravel-Excel** | XLSX & CSV report exports |
+| **barryvdh/laravel-dompdf** | PDF report exports |
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Frontend
+| Technology | Purpose |
+|------------|---------|
+| **Vue 3** | Reactive UI framework |
+| **TypeScript** | Type-safe JavaScript |
+| **Inertia.js v2** | SPA routing via Laravel |
+| **PrimeVue 4** | UI component library (Aura theme) |
+| **Tailwind CSS 3** | Utility-first styling |
+| **Pinia** | State management |
+| **AG Grid** | Spreadsheet-like transaction table |
+| **ApexCharts** | Interactive analytics charts |
 
-```bash
-composer require laravel/boost --dev
+---
 
-php artisan boost:install
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                     Laravel Backend                      │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌────────┐ │
+│  │ Routes   │→ │Controllers│→ │ Services │→ │ Models │ │
+│  │ (web.php)│  │           │  │          │  │ (ORM)  │ │
+│  └──────────┘  └──────────┘  └──────────┘  └────────┘ │
+│                                        ↕                │
+│                                    ┌────────┐          │
+│                                    │ SQLite │          │
+│                                    └────────┘          │
+└───────────────────────┬─────────────────────────────────┘
+                        │ Inertia.js (JSON over HTTP)
+┌───────────────────────▼─────────────────────────────────┐
+│                     Vue 3 SPA (Frontend)                 │
+│  ┌──────────┐  ┌──────────┐  ┌───────────────────┐     │
+│  │  Pages/  │→ │Components│→ │   Layouts/        │     │
+│  │(Inertia) │  │  (reuse) │  │(AuthenticatedLayout)│     │
+│  └──────────┘  └──────────┘  └───────────────────┘     │
+│       ↕                                                    │
+│  ┌──────────────────────────────────────────────────┐   │
+│  │  Ziggy Routes · Pinia Stores · PrimeVue · AG Grid│   │
+│  └──────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────┘
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Key Design Decisions
+- **Zero database server needed** — SQLite keeps setup trivial
+- **Services layer** — Controllers stay thin; business logic lives in `app/Services/`
+- **Form Requests** — Validation and sanitization centralized in `app/Http/Requests/`
+- **Policies** — Authorization gates for Transactions and Reports
+- **No full-page reloads** — Inertia.js streams page data over JSON
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🚀 Installation
 
-## Code of Conduct
+### Prerequisites
+- PHP 8.3+
+- Composer
+- Node.js 18+
+- npm
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Setup
 
-## Security Vulnerabilities
+```bash
+# 1. Clone the repository
+git clone https://github.com/mofasa798/my-duit-v2.git
+cd my-duit-v2
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# 2. Install PHP dependencies
+composer install
 
-## License
+# 3. Set up environment
+cp .env.example .env
+php artisan key:generate
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# 4. Create and migrate the database
+touch database/database.sqlite
+php artisan migrate --seed
+
+# 5. Install frontend dependencies & build
+npm install
+npm run build
+
+# 6. Run the application (use two terminals)
+php artisan serve                 # Terminal 1 — Laravel server
+npm run dev                       # Terminal 2 — Vite dev server
+```
+
+Visit `http://localhost:8000` and log in with the seeded credentials:
+
+> **Email:** `test@example.com`  
+> **Password:** `password`
+
+---
+
+## 📁 Project Structure
+
+```
+my-duit-v2/
+├── app/
+│   ├── Exports/              # XLSX/CSV export classes
+│   ├── Http/
+│   │   ├── Controllers/      # Route handlers
+│   │   ├── Middleware/        # Auth & other middleware
+│   │   └── Requests/          # Form validation
+│   ├── Models/               # Eloquent models (User, Category, Transaction, Report)
+│   ├── Policies/             # Authorization policies
+│   ├── Providers/            # Service providers
+│   └── Services/             # Business logic layer
+├── config/                   # App configuration
+├── database/
+│   ├── factories/            # Model factories
+│   ├── migrations/           # Database schema
+│   └── seeders/              # Test data seeders
+├── public/
+│   └── screenshots/          # Portfolio screenshots
+├── resources/
+│   ├── css/
+│   ├── js/
+│   │   ├── Components/       # Reusable Vue components
+│   │   ├── Layouts/          # Page layouts
+│   │   ├── Pages/            # Inertia page components
+│   │   └── types/            # TypeScript interfaces
+│   └── views/                # Blade templates (exports, app shell)
+├── routes/
+│   ├── web.php               # Main application routes
+│   └── auth.php              # Authentication routes
+├── storage/                  # Laravel storage
+└── tests/                    # PHPUnit test suite
+```
+
+---
+
+## 📸 Screenshots
+
+> *(Screenshots coming soon — capture from your local instance)*
+
+| Page | Preview |
+|------|---------|
+| Dashboard | `public/screenshots/dashboard.png` |
+| Transactions | `public/screenshots/transactions.png` |
+| Analytics | `public/screenshots/analytics.png` |
+| Reports | `public/screenshots/reports.png` |
+
+---
+
+## 🧪 Running Tests
+
+```bash
+php artisan test
+```
+
+---
+
+## 📄 License
+
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

@@ -1,17 +1,7 @@
 <script setup lang="ts">
 import { usePage } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
-
-interface Toast {
-    id: number;
-    type: 'success' | 'error' | 'warning' | 'info';
-    message: string;
-    duration: number;
-    visible: boolean;
-}
-
-const toasts = ref<Toast[]>([]);
-let nextId = 0;
+import { watch } from 'vue';
+import { useToast } from '@/composables/useToast';
 
 const icons: Record<string, string> = {
     success: '✅',
@@ -34,34 +24,11 @@ const textColors: Record<string, string> = {
     info: 'text-blue-800',
 };
 
-export function useToast() {
-    function show(type: Toast['type'], message: string, duration = 3000) {
-        const id = ++nextId;
-        const toast: Toast = { id, type, message, duration, visible: true };
-        toasts.value.push(toast);
-
-        setTimeout(() => {
-            const t = toasts.value.find((t) => t.id === id);
-            if (t) t.visible = false;
-            setTimeout(() => {
-                toasts.value = toasts.value.filter((t) => t.id !== id);
-            }, 400);
-        }, duration);
-    }
-
-    return { show };
-}
-
-function dismiss(id: number) {
-    const t = toasts.value.find((t) => t.id === id);
-    if (t) t.visible = false;
-    setTimeout(() => {
-        toasts.value = toasts.value.filter((t) => t.id !== id);
-    }, 400);
-}
+const { toasts, show, dismiss } = useToast();
 
 // Watch Inertia flash messages
 const page = usePage<{
+    auth: { user: { id: number; name: string; email: string } };
     flash?: {
         success?: string;
         error?: string;
@@ -69,7 +36,6 @@ const page = usePage<{
         info?: string;
     };
 }>();
-const { show } = useToast();
 
 watch(
     () => page.props.flash,
