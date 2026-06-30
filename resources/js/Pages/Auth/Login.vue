@@ -9,6 +9,7 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 
 defineProps<{
     canResetPassword?: boolean;
+    canRegister?: boolean;
     status?: string;
 }>();
 
@@ -90,6 +91,21 @@ const submit = () => {
                 >
                     Log in
                 </PrimaryButton>
+            </div>
+
+            <div
+                v-if="canRegister"
+                class="mt-6 border-t border-gray-200 pt-4 text-center"
+            >
+                <p class="text-sm text-gray-600">
+                    Don't have an account?
+                    <Link
+                        :href="route('register')"
+                        class="font-semibold text-indigo-600 underline hover:text-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    >
+                        Register here
+                    </Link>
+                </p>
             </div>
         </form>
     </GuestLayout>
