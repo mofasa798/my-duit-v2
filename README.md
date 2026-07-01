@@ -4,7 +4,8 @@
   <img src="https://img.shields.io/badge/Vue_3-4FC08D?logo=vue.js" alt="Vue 3">
   <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript" alt="TypeScript">
   <img src="https://img.shields.io/badge/Inertia.js-8B5CF6?logo=inertia" alt="Inertia.js">
-  <img src="https://img.shields.io/badge/SQLite-003B57?logo=sqlite" alt="SQLite">
+  <img src="https://img.shields.io/badge/Supabase-3FCF8E?logo=supabase" alt="Supabase">
+  <img src="https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql" alt="PostgreSQL">
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="License">
 </p>
 
@@ -33,7 +34,7 @@
 
 | Feature | Description |
 |---------|-------------|
-| 🔐 **Authentication** | Login, register, password reset, email verification — powered by Laravel Breeze |
+| 🔐 **Authentication** | Login, register, password reset, email verification — powered by Laravel Breeze & Supabase Auth |
 | 📊 **Dashboard** | AG Grid spreadsheet with inline editing (double-click to edit), quick transaction form |
 | 💳 **Transactions** | Full CRUD with search, type/category/date filtering, paginated table |
 | 📈 **Analytics** | Interactive pie (expense by category), bar (income vs expense), and line charts (daily trends) |
@@ -49,7 +50,7 @@
 | Technology | Purpose |
 |------------|---------|
 | **Laravel 13** | PHP web framework |
-| **SQLite** | Lightweight, file-based database |
+| **Supabase PostgreSQL** | Cloud-hosted PostgreSQL database with real-time capabilities |
 | **Laravel Breeze** | Authentication scaffolding |
 | **Laravel Sanctum** | API token management |
 | **maatwebsite/Laravel-Excel** | XLSX & CSV report exports |
@@ -66,6 +67,7 @@
 | **Pinia** | State management |
 | **AG Grid** | Spreadsheet-like transaction table |
 | **ApexCharts** | Interactive analytics charts |
+| **Supabase JS** | Backend-as-a-Service — auth, database & real-time subscriptions |
 
 ---
 
@@ -79,9 +81,9 @@
 │  │ (web.php)│  │           │  │          │  │ (ORM)  │ │
 │  └──────────┘  └──────────┘  └──────────┘  └────────┘ │
 │                                        ↕                │
-│                                    ┌────────┐          │
-│                                    │ SQLite │          │
-│                                    └────────┘          │
+│                                    ┌───────────────┐ │
+│                                    │ Supabase (RDS) │ │
+│                                    └───────────────┘ │
 └───────────────────────┬─────────────────────────────────┘
                         │ Inertia.js (JSON over HTTP)
 ┌───────────────────────▼─────────────────────────────────┐
@@ -98,7 +100,7 @@
 ```
 
 ### Key Design Decisions
-- **Zero database server needed** — SQLite keeps setup trivial
+- **Supabase PostgreSQL** — Cloud-hosted database; supports Laravel directly via `pgsql` driver and the Vue frontend via `@supabase/supabase-js`
 - **Services layer** — Controllers stay thin; business logic lives in `app/Services/`
 - **Form Requests** — Validation and sanitization centralized in `app/Http/Requests/`
 - **Policies** — Authorization gates for Transactions and Reports
@@ -128,15 +130,20 @@ composer install
 cp .env.example .env
 php artisan key:generate
 
-# 4. Create and migrate the database (with sample data)
-touch database/database.sqlite
+# 4. Set up Supabase database
+#    - Create a project at https://supabase.com
+#    - Copy your project URL and anon/publishable key
+#    - Fill in VITE_SUPABASE_URL & VITE_SUPABASE_PUBLISHABLE_KEY in .env
+#    - Configure DB_* variables with your Supabase PostgreSQL credentials
+
+# 5. Migrate the database (with sample data)
 php artisan migrate --seed
 
-# 5. Install frontend dependencies & build for production
+# 6. Install frontend dependencies & build for production
 npm install
 npm run build
 
-# 6. Run the application (use two terminals)
+# 7. Run the application (use two terminals)
 php artisan serve                 # Terminal 1 — Laravel server (http://localhost:8000)
 npm run dev                       # Terminal 2 — Vite dev server (HMR)
 ```
@@ -181,10 +188,11 @@ my-duit-v2/
 │   ├── css/
 │   ├── js/
 │   │   ├── Components/       # Reusable Vue components
-│   │   ├── composables/      # Vue composables (useToast, etc.)
-│   │   ├── Layouts/          # Page layouts
-│   │   ├── Pages/            # Inertia page components
-│   │   └── types/            # TypeScript interfaces
+│   │   ├── composables/      # Vue composables (useToast, useSupabase, etc.)
+│   ├── lib/               # Core utilities (supabase client, etc.)
+│   ├── Layouts/           # Page layouts
+│   ├── Pages/             # Inertia page components
+│   └── types/             # TypeScript interfaces
 │   └── views/                # Blade templates (exports, app shell)
 ├── routes/
 │   ├── web.php               # Main application routes
