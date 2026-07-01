@@ -40,6 +40,7 @@
         "pinia": "^3.0.4",
         "postgres": "^3.4.9",
         "primevue": "^4.5.5",
-        "vue3-apexcharts": "^1.11.1"
+        "vue3-apexcharts": "^1.11.1",
+        "ziggy-js": "^2.6.3"
     }
 }
